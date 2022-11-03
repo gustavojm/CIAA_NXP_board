@@ -81,45 +81,6 @@ extern "C" {
 #define USE_RMII
 #define BOARD_ENET_PHY_ADDR	1
 
-/* LCD interface defines */
-#define LCD_SSP              LPC_SSP1
-#define LCD_CDM_PORT         6
-#define LCD_CMD_PIN          5
-#define LCD_CMD_CFG          (SCU_MODE_INBUFF_EN | SCU_MODE_PULLUP | SCU_MODE_FUNC0)
-#define LCD_CMD_GPIO_PORT    3
-#define LCD_CMD_GPIO_PIN     4
-#define LCD_BIT_RATE         1000000 /* 1 MHz */
-
-/* Audio Codec defines */
-#define I2CDEV_WM8904_ADDR     (0x34 >> 1)
-#define WM8904_I2C_BUS         I2C1
-#define CODEC_LINE_IN          0 /* Mic */
-#define AUDCFG_SAMPLE_RATE     16000
-
-/* For USBLIB examples */
-#define LEDS_LED1           0x01
-#define LEDS_LED2           0x02
-#define LEDS_LED3           0x04
-#define LEDS_LED4           0x08
-#define LEDS_NO_LEDS        0x00
-#define BUTTONS_BUTTON1     0x01
-#define JOY_UP              0x01
-#define JOY_DOWN            0x02
-#define JOY_LEFT            0x04
-#define JOY_RIGHT           0x08
-#define JOY_PRESS           0x10
-#define NO_BUTTON_PRESSED   0x00
-
-/*Define if use SDCARD for Mass Storage Example*/
-// #define CFG_SDCARD
-
-#define BUTTONS_BUTTON1_GPIO_PORT_NUM   0
-#define BUTTONS_BUTTON1_GPIO_BIT_NUM    7
-#define LED1_GPIO_PORT_NUM              1
-#define LED1_GPIO_BIT_NUM               11
-#define LED2_GPIO_PORT_NUM              1
-#define LED2_GPIO_BIT_NUM               12
-
 /* USB1 VBUS Enable GPIO pins */
 #define USB1_VBUS_PORT_NUM          2
 #define USB1_VBUS_PIN_NUM           5
@@ -231,15 +192,18 @@ STATIC INLINE void Board_ADC_Init(void){}
  * @brief	Initialize Pinmuxing for the LCD interface
  * @return	Nothing
  */
-void Board_LCD_Init(void);
 
-/**
- * @brief	Write given data to LCD module
- * @param	data	: data to be written
- * @param	size	: number of data items
- * @return	Nothing
- */
-void Board_LCD_WriteData(const uint8_t *data, uint16_t size);
+#define US_CYCLES    OscRateIn/1000000    /* 1 uS */
+
+static inline void udelay(int32_t us)
+{
+	volatile uint32_t i;
+	while (us--) {
+		for (i = 0; i < US_CYCLES; i++) {
+			; /* Burn cycles. */
+		}
+	}
+}
 
 /**
  * @}
