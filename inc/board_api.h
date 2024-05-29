@@ -137,7 +137,13 @@ typedef void (*p_msDelay_func_t)(uint32_t);
 /* The DEBUG* functions are selected based on system configuration.
    Code that uses the DEBUG* functions will have their I/O routed to
    the UART, semihosting, or nowhere. */
-#if defined(DEBUG_ENABLE)
+#if defined(NDEBUG)
+#define DEBUGINIT()
+#define DEBUGOUT(...)
+#define DEBUGSTR(str)
+#define DEBUGIN() (int) EOF
+#else
+
 #if defined(DEBUG_SEMIHOSTING)
 #define DEBUGINIT()
 #define DEBUGOUT(...) printf(__VA_ARGS__)
@@ -151,12 +157,7 @@ typedef void (*p_msDelay_func_t)(uint32_t);
 #define DEBUGIN() Board_UARTGetChar()
 #endif /* defined(DEBUG_SEMIHOSTING) */
 
-#else
-#define DEBUGINIT()
-#define DEBUGOUT(...)
-#define DEBUGSTR(str)
-#define DEBUGIN() (int) EOF
-#endif /* defined(DEBUG_ENABLE) */
+#endif /* defined(NDEBUG) */
 
 /**
  * @}

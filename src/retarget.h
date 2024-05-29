@@ -3,9 +3,9 @@
  *
  * This file adds re-direction support to the library for various
  * projects. It can be configured in one of 3 ways - no redirection,
- * redirection via a UART, or redirection via semihosting. If DEBUG
- * is not defined, all printf statements will do nothing with the
- * output being throw away. If DEBUG is defined, then the choice of
+ * redirection via a UART, or redirection via semihosting. If NDEBUG
+ * not defined, all printf statements will do nothing with the
+ * output being throw away. If NDEBUG is not defined, then the choice of
  * output is selected by the DEBUG_SEMIHOSTING define. If the
  * DEBUG_SEMIHOSTING is not defined, then output is redirected via
  * the UART. If DEBUG_SEMIHOSTING is defined, then output will be
@@ -50,7 +50,7 @@
 #include <stdio.h>
 #include <rt_misc.h>
 
-#if defined(DEBUG_ENABLE)
+#if !defined(NDEBUG)
 #if defined(DEBUG_SEMIHOSTING)
 #define ITM_Port8(n)    (*((volatile unsigned char *) (0xE0000000 + 4 * n)))
 #define ITM_Port16(n)   (*((volatile unsigned short *) (0xE0000000 + 4 * n)))
@@ -75,7 +75,7 @@ static INLINE void BoardOutChar(char ch)
 }
 
 #endif /* defined(DEBUG_SEMIHOSTING) */
-#endif /* defined(DEBUG_ENABLE) */
+#endif /* !defined(NDEBUG) */
 
 struct __FILE {
 	int handle;
@@ -92,7 +92,7 @@ void *_sys_open(const char *name, int openmode)
 
 int fputc(int c, FILE *f)
 {
-#if defined(DEBUG_ENABLE)
+#if !defined(NDEBUG)
 #if defined(DEBUG_SEMIHOSTING)
 	_ttywrch(c);
 #else
@@ -104,7 +104,7 @@ int fputc(int c, FILE *f)
 
 int fgetc(FILE *f)
 {
-#if defined(DEBUG_ENABLE) && !defined(DEBUG_SEMIHOSTING)
+#if !defined(NDEBUG) && !defined(DEBUG_SEMIHOSTING)
 	return Board_UARTGetChar();
 #else
 	return 0;
@@ -151,7 +151,7 @@ label:
  *
  ********************/
 
-#if defined(DEBUG_ENABLE) && !defined(DEBUG_SEMIHOSTING)
+#if !defined(NDEBUG) && !defined(DEBUG_SEMIHOSTING)
 
 _STD_BEGIN
 
@@ -163,7 +163,9 @@ _STD_BEGIN
    (i.e. flush) when the application terminates. */
 size_t __write(int handle, const unsigned char *buffer, size_t size)
 {
-#if defined(DEBUG_ENABLE)
+#if defined(NDEBUG)
+	return size;
+#else
 	size_t nChars = 0;
 
 	if (buffer == 0) {
@@ -187,9 +189,7 @@ size_t __write(int handle, const unsigned char *buffer, size_t size)
 	}
 
 	return nChars;
-#else
-	return size;
-#endif /* defined(DEBUG_ENABLE) */
+#endif /* defined(NDEBUG) */
 }
 
 _STD_END
@@ -216,16 +216,16 @@ _STD_END
 #endif
 #endif /* __NEWLIB__ */
 
-#if defined(DEBUG_ENABLE)
+#if !defined(NDEBUG)
 #if defined(DEBUG_SEMIHOSTING)
 /* Do nothing, semihosting is enabled by default in LPCXpresso */
 #endif /* defined(DEBUG_SEMIHOSTING) */
-#endif /* defined(DEBUG_ENABLE) */
+#endif /* !defined(NDEBUG) */
 
 #if !defined(DEBUG_SEMIHOSTING)
 int WRITEFUNC(int iFileHandle, char *pcBuffer, int iLength)
 {
-#if defined(DEBUG_ENABLE)
+#if !defined(NDEBUG)
 	unsigned int i;
 	for (i = 0; i < iLength; i++) {
 		Board_UARTPutChar(pcBuffer[i]);
@@ -242,7 +242,7 @@ int WRITEFUNC(int iFileHandle, char *pcBuffer, int iLength)
    the character from the LPC1768/RDB1768 UART. */
 int READFUNC(void)
 {
-#if defined(DEBUG_ENABLE)
+#if !defined(NDEBUG)
 	int c = Board_UARTGetChar();
 	return c;
 

@@ -52,17 +52,10 @@ extern "C" {
  * @{
  */
 
-/** Define DEBUG_ENABLE to enable IO via the DEBUGSTR, DEBUGOUT, and
-    DEBUGIN macros. If not defined, DEBUG* functions will be optimized
-	out of the code at build time.
- */
-#define DEBUG_ENABLE
-
-/** Define DEBUG_SEMIHOSTING along with DEBUG_ENABLE to enable IO support
+/** Define DEBUG_SEMIHOSTING along with NDEBUG not defined to enable IO support
     via semihosting. You may need to use a C library that supports
 	semihosting with this option.
  */
-//#define DEBUG_SEMIHOSTING
 
 /** Board UART used for debug output and input using the DEBUG* macros. This
     is also the port used for Board_UARTPutChar, Board_UARTGetChar, and
