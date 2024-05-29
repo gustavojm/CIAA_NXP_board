@@ -89,33 +89,24 @@ extern "C" {
 #define USB1_VBUS_GPIO_BIT_NUM      5
 
 /**
- * @brief	Sets up board specific I2C interface
- * @param	id	: I2C Peripheral ID (I2C0, I2C1)
- * @return	Nothing
- */
-void Board_I2C_Init(I2C_ID_T id);
-
-/**
  * @brief	Sets up I2C Fast Plus mode
- * @param	id	: Must always be I2C0
  * @return	Nothing
  * @note	This function must be called before calling
  *          Chip_I2C_SetClockRate() to set clock rates above
  *          normal range 100KHz to 400KHz. Only I2C0 supports
  *          this mode.
  */
-STATIC INLINE void Board_I2C_EnableFastPlus(I2C_ID_T id)
+STATIC INLINE void Board_I2C_EnableFastPlus()
 {
 	Chip_SCU_I2C0PinConfig(I2C0_FAST_MODE_PLUS);
 }
 
 /**
  * @brief	Disable I2C Fast Plus mode and enables default mode
- * @param	id	: Must always be I2C0
  * @return	Nothing
  * @sa		Board_I2C_EnableFastPlus()
  */
-STATIC INLINE void Board_I2C_DisableFastPlus(I2C_ID_T id)
+STATIC INLINE void Board_I2C_DisableFastPlus()
 {
 	Chip_SCU_I2C0PinConfig(I2C0_STANDARD_FAST_MODE);
 }
@@ -143,12 +134,6 @@ __STATIC_INLINE void Board_USB1_DisableVbus(void)
 }
 
 /**
- * @brief	Initializes board specific GPIO Interrupt
- * @return	Nothing
- */
-void Board_GPIO_Int_Init(void);
-
-/**
  * @brief	Initialize pin muxing for SSP interface
  * @param	pSSP	: Pointer to SSP interface to initialize
  * @return	Nothing
@@ -168,12 +153,6 @@ void Board_ENET_GetMacADDR(uint8_t *mcaddr);
  * @return	Nothing
  */
 void Board_UART_Init(LPC_USART_T *pUART);
-
-/**
- * @brief	Initialize pin muxing for SDMMC interface
- * @return	Nothing
- */
-void Board_SDMMC_Init(void);
 
 /**
  * @brief	Initialize DAC

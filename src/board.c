@@ -123,44 +123,13 @@ void Board_Init(void)
 	Chip_ENET_RMIIEnable(LPC_ETHERNET);
 }
 
-void Board_I2C_Init(I2C_ID_T id)
-{
-	if (id == I2C1) {
-		/* Configure pin function for I2C1*/
-		Chip_SCU_PinMuxSet(0x2, 3, (SCU_MODE_ZIF_DIS | SCU_MODE_INBUFF_EN | SCU_MODE_FUNC1));		/* P2.3 : I2C1_SDA */
-		Chip_SCU_PinMuxSet(0x2, 4, (SCU_MODE_ZIF_DIS | SCU_MODE_INBUFF_EN | SCU_MODE_FUNC1));		/* P2.4 : I2C1_SCL */
-	}
-	else {
-		Chip_SCU_I2C0PinConfig(I2C0_STANDARD_FAST_MODE);
-	}
-}
-
-void Board_SDMMC_Init(void)
-{
-	Chip_SCU_PinMuxSet(0x1, 9, SDIO_DAT_PINCFG);	/* P1.9 connected to SDIO_D0 */
-	Chip_SCU_PinMuxSet(0x1, 10, SDIO_DAT_PINCFG);	/* P1.10 connected to SDIO_D1 */
-	Chip_SCU_PinMuxSet(0x1, 11, SDIO_DAT_PINCFG);	/* P1.11 connected to SDIO_D2 */
-	Chip_SCU_PinMuxSet(0x1, 12, SDIO_DAT_PINCFG);	/* P1.12 connected to SDIO_D3 */
-
-	Chip_SCU_ClockPinMuxSet(2, (SCU_MODE_INACT | SCU_MODE_INBUFF_EN | SCU_MODE_FUNC4));	/* CLK2 connected to SDIO_CLK */
-	Chip_SCU_PinMuxSet(0x1, 6, SDIO_DAT_PINCFG);	/* P1.6 connected to SDIO_CMD */
-	Chip_SCU_PinMuxSet(0x1, 13, (SCU_MODE_INBUFF_EN | SCU_MODE_FUNC7));	/* P1.13 connected to SDIO_CD */
-}
-
 void Board_SSP_Init(LPC_SSP_T *pSSP)
 {
 	if (pSSP == LPC_SSP1) {
-		Chip_SCU_PinMuxSet(0x1, 5, (SCU_PINIO_FAST | SCU_MODE_FUNC5));  /* P1.5 => SSEL1 */
-		Chip_SCU_PinMuxSet(0xF, 4, (SCU_PINIO_FAST | SCU_MODE_FUNC0));  /* PF.4 => SCK1 */
-
-		Chip_SCU_PinMuxSet(0x1, 4, (SCU_MODE_INACT | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS | SCU_MODE_FUNC5)); /* P1.4 => MOSI1 */
 		Chip_SCU_PinMuxSet(0x1, 3, (SCU_MODE_INACT | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS | SCU_MODE_FUNC5)); /* P1.3 => MISO1 */
-        
-        Chip_SCU_PinMuxSet(0x3, 1, (SCU_MODE_INACT | SCU_MODE_FUNC4));  /* P1.5 => SSEL1 */
-        Chip_GPIO_SetPinDIROutput(LPC_GPIO_PORT, 5, 8);
-        Chip_GPIO_SetPinState(LPC_GPIO_PORT, 5, 8, (bool) true);
-	}
-	else {
+		Chip_SCU_PinMuxSet(0x1, 4, (SCU_MODE_INACT | SCU_MODE_INBUFF_EN | SCU_MODE_ZIF_DIS | SCU_MODE_FUNC5)); /* P1.4 => MOSI1 */
+		Chip_SCU_PinMuxSet(0xF, 4, (SCU_PINIO_FAST | SCU_MODE_FUNC0));  									   /* PF.4 => SCK1  */
+	} else {
 		return;
 	}
 }

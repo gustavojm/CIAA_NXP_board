@@ -151,8 +151,6 @@ label:
  *
  ********************/
 
-#include <yfuns.h>
-
 #if defined(DEBUG_ENABLE) && !defined(DEBUG_SEMIHOSTING)
 
 _STD_BEGIN
